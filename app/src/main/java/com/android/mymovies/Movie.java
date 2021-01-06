@@ -40,6 +40,14 @@ public class Movie implements Serializable {
     public String getImage() {
         return image;
     }
+
+    public String getOverview() {
+        return overview;
+    }
+
+    public String getReleaseDate() {
+        return releaseDate;
+    }
 }
 
 
