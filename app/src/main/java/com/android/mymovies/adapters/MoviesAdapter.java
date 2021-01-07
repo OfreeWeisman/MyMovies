@@ -1,4 +1,4 @@
-package com.android.mymovies;
+package com.android.mymovies.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,6 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.mymovies.Movie;
+import com.android.mymovies.R;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
@@ -49,6 +51,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         String imagePath = "https://image.tmdb.org/t/p/w500" + movie.getImage();
         Glide.with(context)
                 .load(imagePath)
+                .centerCrop()
                 .into(holder.image);
     }
 

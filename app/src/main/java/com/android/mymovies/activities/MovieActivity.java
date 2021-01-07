@@ -1,4 +1,4 @@
-package com.android.mymovies;
+package com.android.mymovies.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,6 +9,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.mymovies.Movie;
+import com.android.mymovies.R;
 import com.bumptech.glide.Glide;
 
 public class MovieActivity extends AppCompatActivity {

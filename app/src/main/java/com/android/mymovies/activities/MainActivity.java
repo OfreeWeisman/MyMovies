@@ -1,13 +1,20 @@
-package com.android.mymovies;
+package com.android.mymovies.activities;
 
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.android.mymovies.Movie;
+import com.android.mymovies.R;
+import com.android.mymovies.adapters.MoviesAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,7 +31,7 @@ import okhttp3.Response;
 
 
 public class MainActivity extends AppCompatActivity {
-
+    private ImageButton searchButoon;
     private NestedScrollView scrollView;
     private RecyclerView recyclerView;
     private ArrayList<Movie> movies;
@@ -36,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        searchButoon = findViewById(R.id.toolbar_search_button);
         scrollView = findViewById(R.id.scrollView);
         movies = new ArrayList<>();
         recyclerView = findViewById(R.id.recyclerView);
@@ -49,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         Intent i = getIntent();
         String intentExtra = i.getStringExtra("query");
         if (intentExtra != null) {
-            url = searchApiUrl + apiKey + "&language=en-US&include_adult=false" + intentExtra;
+            url = searchApiUrl + apiKey + "&language=en-US&include_adult=false&query=" + intentExtra + "&page=";
         }
 
         sendApiRequest(url, page++);
@@ -60,6 +68,14 @@ public class MainActivity extends AppCompatActivity {
                 if(scrollY == v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight()) {
                     sendApiRequest(url, page++);
                 }
+            }
+        });
+
+        searchButoon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -101,12 +117,16 @@ public class MainActivity extends AppCompatActivity {
             JSONArray resArray = mainObject.getJSONArray("results");
             for (int i = 0; i < resArray.length(); i++) {
                 JSONObject jsonMovie = resArray.getJSONObject(i);
+                String image = jsonMovie.getString("poster_path");
+                if (image.equals("null")) {
+                    continue;
+                }
                 String id = jsonMovie.getString("id");
                 String title = jsonMovie.getString("title");
                 String overview = jsonMovie.getString("overview");
                 String release_date = jsonMovie.getString("release_date");
                 double rating = jsonMovie.getDouble("vote_average");
-                String image = jsonMovie.getString("poster_path");
+
                 Movie movie = new Movie(id, title, overview, release_date, rating, image);
                 movies.add(movie);
             }
