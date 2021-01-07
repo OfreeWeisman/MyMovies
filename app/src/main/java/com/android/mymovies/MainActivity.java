@@ -3,18 +3,15 @@ package com.android.mymovies;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,43 +22,53 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-import static android.content.Intent.FLAG_ACTIVITY_REORDER_TO_FRONT;
-import static java.lang.Integer.parseInt;
 
 public class MainActivity extends AppCompatActivity {
 
+    private NestedScrollView scrollView;
     private RecyclerView recyclerView;
     private ArrayList<Movie> movies;
-    private int pages;
+    private int page = 1;
+    private String url = "https://api.themoviedb.org/3/discover/movie?api_key=6da65f3de080488aba7cb19a8e1601ce&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        scrollView = findViewById(R.id.scrollView);
         movies = new ArrayList<>();
         recyclerView = findViewById(R.id.recyclerView);
-        pages = 0;
 
         String apiKey = "api_key=6da65f3de080488aba7cb19a8e1601ce";
-        String apiUrl = "https://api.themoviedb.org/3/discover/movie?";
+        String defaultApiUrl = "https://api.themoviedb.org/3/discover/movie?";
+        String searchApiUrl = "https://api.themoviedb.org/3/search/movie?";
         String input = "&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=";
-        String page = "1";
-        String url = apiUrl + apiKey + input + page;
-        //Toast.makeText(MainActivity.this, "onCreate" + movies.size(), Toast.LENGTH_SHORT).show();
-        sendApiRequest(url);
 
-//        for(int i = 1; i <= 3; i++) {
-//            String new_url = apiUrl + apiKey + input + i;
-//            sendApiRequest(new_url);
-//        }
+        //check if we received query to display movies by, using intent:
+        Intent i = getIntent();
+        String intentExtra = i.getStringExtra("query");
+        if (intentExtra != null) {
+            url = searchApiUrl + apiKey + "&language=en-US&include_adult=false" + intentExtra;
+        }
 
+        sendApiRequest(url, page++);
+
+        scrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                if(scrollY == v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight()) {
+                    sendApiRequest(url, page++);
+                }
+            }
+        });
     }
 
-    private void sendApiRequest(String url) {
+
+    private void sendApiRequest(String url, int page) {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url(url)
+                .url(url+page)
                 .build();
 
         // enqueue runs the request in the background
@@ -78,24 +85,7 @@ public class MainActivity extends AppCompatActivity {
                     MainActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            try {
-                                JSONObject mainObject = new JSONObject(myResponse);
-                                pages = mainObject.getInt("total_pages");
-                                JSONArray resArray = mainObject.getJSONArray("results");
-                                for (int i = 0; i < resArray.length(); i++) {
-                                    JSONObject jsonMovie = resArray.getJSONObject(i);
-                                    String id = jsonMovie.getString("id");
-                                    String title = jsonMovie.getString("title");
-                                    String overview = jsonMovie.getString("overview");
-                                    String release_date = jsonMovie.getString("release_date");
-                                    double rating = jsonMovie.getDouble("vote_average");
-                                    String image = jsonMovie.getString("poster_path");
-                                    Movie movie = new Movie(id, title, overview, release_date, rating, image);
-                                    movies.add(movie);
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                            parseResponse(myResponse);
                             displayMovies();
                         }
                     });
@@ -105,7 +95,28 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void parseResponse (String response) {
+        try {
+            JSONObject mainObject = new JSONObject(response);
+            JSONArray resArray = mainObject.getJSONArray("results");
+            for (int i = 0; i < resArray.length(); i++) {
+                JSONObject jsonMovie = resArray.getJSONObject(i);
+                String id = jsonMovie.getString("id");
+                String title = jsonMovie.getString("title");
+                String overview = jsonMovie.getString("overview");
+                String release_date = jsonMovie.getString("release_date");
+                double rating = jsonMovie.getDouble("vote_average");
+                String image = jsonMovie.getString("poster_path");
+                Movie movie = new Movie(id, title, overview, release_date, rating, image);
+                movies.add(movie);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void displayMovies() {
+
         recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 2));
         MoviesAdapter adapter = new MoviesAdapter(MainActivity.this, movies);
         recyclerView.setAdapter(adapter);

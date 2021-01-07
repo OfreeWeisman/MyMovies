@@ -44,13 +44,13 @@ public class MovieActivity extends AppCompatActivity {
                 .load(imagePath)
                 .into(image);
 
+
+
+
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MovieActivity.this, MainActivity.class);
                 finish();
-                startActivity(intent);
-
             }
         });
     }
