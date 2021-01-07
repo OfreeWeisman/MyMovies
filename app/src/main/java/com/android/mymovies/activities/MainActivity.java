@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ArrayList<Movie> movies;
     private int page = 1;
-    private int scroll = -1;
     private String url = "https://api.themoviedb.org/3/discover/movie?api_key=6da65f3de080488aba7cb19a8e1601ce&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=";
 
     @Override
@@ -83,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
     private void sendApiRequest(String url, int page) {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
@@ -101,12 +99,12 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     final String myResponse = response.body().string();
+                    //parseResponse(myResponse);
                     MainActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             parseResponse(myResponse);
                             displayMovies();
-                            scroll = -1;
                         }
                     });
                 }
