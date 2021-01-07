@@ -46,13 +46,21 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
         Movie movie = movies.get(position);
         holder.title.setText(movie.getTitle());
-        holder.ratings.setText(String.valueOf(movie.getRating()));
+        double movie_rating = movie.getRating();
+        if (movie_rating == 0.0) {
+            holder.ratings.setText("");
+            holder.star.setImageResource(R.drawable.ic_grade_black_24dp);
+        } else {
+            holder.ratings.setText(String.valueOf(movie.getRating()));
+        }
 
         String imagePath = "https://image.tmdb.org/t/p/w500" + movie.getImage();
         Glide.with(context)
                 .load(imagePath)
                 .centerCrop()
                 .into(holder.image);
+
+
     }
 
     @Override
@@ -64,6 +72,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         private TextView title;
         private TextView ratings;
         private ImageView image;
+        private ImageView star;
 
         public MovieViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -72,6 +81,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
             title = itemView.findViewById(R.id.movieTitle);
             ratings = itemView.findViewById(R.id.movieRating);
             image = itemView.findViewById(R.id.movieImg);
+            star = itemView.findViewById(R.id.movie_star_icon);
 
         }
 

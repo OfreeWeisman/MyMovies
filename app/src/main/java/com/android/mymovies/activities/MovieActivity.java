@@ -21,6 +21,7 @@ public class MovieActivity extends AppCompatActivity {
     private TextView releaseDate;
     private ImageView image;
     private TextView overview;
+    private ImageView star;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +31,7 @@ public class MovieActivity extends AppCompatActivity {
         Intent i = getIntent();
         Movie movie = (Movie)i.getSerializableExtra("movie");
 
+        star = findViewById(R.id.star);
         backButton = findViewById(R.id.backButton);
         movieHeader = findViewById(R.id.movieHeader);
         String imagePath = "https://image.tmdb.org/t/p/w500" + movie.getImage();
@@ -39,7 +41,13 @@ public class MovieActivity extends AppCompatActivity {
         overview = findViewById(R.id.info);
 
         movieHeader.setText(movie.getTitle());
-        rating.setText(String.valueOf(movie.getRating()));
+        double movie_rating = movie.getRating();
+        if (movie_rating == 0.0) {
+            rating.setText("");
+            star.setImageResource(R.drawable.ic_grade_black_24dp);
+        } else {
+            rating.setText(String.valueOf(movie.getRating()));
+        }
         releaseDate.setText(movie.getReleaseDate());
         overview.setText(movie.getOverview());
         Glide.with(this)

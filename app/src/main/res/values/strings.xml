@@ -2,5 +2,5 @@
     <string name="app_name">My Movies</string>
     <string name="search_header">Search</string>
     <string name="find_movies">Find Movies</string>
-
+    <string name="search_movies">Search Movies...</string>
 </resources>

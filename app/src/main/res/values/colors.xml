@@ -7,4 +7,6 @@
     <color name ="colorDarkBackground">#111111</color>
     <color name="colorDarkCard">#202020</color>
     <color name="lightText">#ffffff</color>
+    <color name="colorHintText">#6c6c6c</color>
+
 </resources>
