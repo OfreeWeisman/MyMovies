@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.widget.NestedScrollView;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ArrayList<Movie> movies;
     private int page = 1;
+    private int scroll = -1;
     private String url = "https://api.themoviedb.org/3/discover/movie?api_key=6da65f3de080488aba7cb19a8e1601ce&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=";
 
     @Override
@@ -65,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         scrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                if(scrollY == v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight()) {
+                if(scrollY >= v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight()) {
                     sendApiRequest(url, page++);
                 }
             }
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                finish();
                 startActivity(intent);
             }
         });
@@ -103,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
                         public void run() {
                             parseResponse(myResponse);
                             displayMovies();
+                            scroll = -1;
                         }
                     });
                 }

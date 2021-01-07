@@ -87,7 +87,9 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(SearchActivity.this, MainActivity.class);
-                intent.putExtra("query", autoCompleteTextView.getText().toString());
+                if(!autoCompleteTextView.getText().toString().isEmpty()) {
+                    intent.putExtra("query", autoCompleteTextView.getText().toString());
+                }
                 finish();
                 startActivity(intent);
             }
