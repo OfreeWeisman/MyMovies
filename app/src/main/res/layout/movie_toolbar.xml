@@ -5,34 +5,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorDarkBackground">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageButton
-            android:id="@+id/backButton"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginEnd="5dp"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:background="@android:color/transparent"
-            android:src="@drawable/ic_arrow_back_white_24dp" />
-
-        <TextView
-            android:id="@+id/movieHeader"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="22sp"
-            android:textColor="@color/lightText"
-            android:layout_marginEnd="5dp"
-            android:layout_marginStart="5dp"
-            android:layout_toEndOf="@+id/backButton"
-           />
 
 
+    <ImageButton
+        android:id="@+id/backButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="15dp"
+        android:layout_gravity="start"
+        android:background="@drawable/round_button"
+        android:src="@drawable/ic_arrow_back_white_24dp" />
 
-    </RelativeLayout>
+    <TextView
+        android:id="@+id/movieHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="22sp"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:textColor="@color/lightText"
+        android:layout_marginEnd="15dp"
+        android:layout_marginStart="5dp"
+        android:layout_toEndOf="@+id/backButton"
+       />
+
+
+
 
 
 
