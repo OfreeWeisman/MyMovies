@@ -16,3 +16,12 @@ You can either download the apk provided in this git repo, or:
 ## Built with
 * [OkHttp](https://square.github.io/okhttp/) - Used to send requests to a web API in the background and process the response in the UI thread
 * [Glide](https://bumptech.github.io/glide/) - Used for loading images and displaying them
+
+## Screenshots
+<p float="left">
+  <img src="https://github.com/OfreeWeisman/MyMovies/blob/master/main-screen.jpeg" width="300"/>
+  <img src="https://github.com/OfreeWeisman/MyMovies/blob/master/movie-page.jpeg" width="300"/>
+  <img src="https://github.com/OfreeWeisman/MyMovies/blob/master/search-movies.jpeg" width="300"/>
+ </p>
+
+
