@@ -8,7 +8,7 @@ Also, it is possible to search movies by keywords.
 Minimum SDK - API 21: Android 5.0 (Lollipop).
 
 ## Instructions
-You can either download the apk provided in this git repo, or:
+You can either download and install the my-movies.apk file provided in this git repo, or:
 1. Clone the repository
 2. Build the application
 3. Install the apk (MyMovies/app/build/outputs/apk/debug) on your Android device
