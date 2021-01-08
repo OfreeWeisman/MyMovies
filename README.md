@@ -19,9 +19,9 @@ You can either download and install the 'my-movies.apk' file provided in this gi
 
 ## Screenshots
 <p float="left">
-  <img src="https://github.com/OfreeWeisman/MyMovies/blob/master/main-screen.jpeg" width="300"/>
-  <img src="https://github.com/OfreeWeisman/MyMovies/blob/master/movie-page.jpeg" width="300"/>
-  <img src="https://github.com/OfreeWeisman/MyMovies/blob/master/search-movies.jpeg" width="300"/>
+  <img src="https://github.com/OfreeWeisman/MyMovies/blob/master/main-screen.jpeg" width="270"/>
+  <img src="https://github.com/OfreeWeisman/MyMovies/blob/master/movie-page.jpeg" width="270"/>
+  <img src="https://github.com/OfreeWeisman/MyMovies/blob/master/search-movies.jpeg" width="270"/>
  </p>
 
 
