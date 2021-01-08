@@ -76,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-                finish();
                 startActivity(intent);
             }
         });
@@ -110,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 
     private void parseResponse (String response) {

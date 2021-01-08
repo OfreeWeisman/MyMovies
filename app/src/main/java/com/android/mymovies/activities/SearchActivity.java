@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.android.mymovies.Movie;
 import com.android.mymovies.R;
@@ -35,7 +36,6 @@ import okhttp3.Response;
 public class SearchActivity extends AppCompatActivity {
     private ArrayList<String> suggestions;
     private AutoCompleteTextView autoCompleteTextView;
-    private Button findMovies;
     private static final int TRIGGER_AUTO_COMPLETE = 100;
     private static final long AUTO_COMPLETE_DELAY = 500;
     private Handler handler;
@@ -46,7 +46,8 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        findMovies = findViewById(R.id.find_movies);
+        Button findMovies = findViewById(R.id.find_movies);
+        ImageButton back = findViewById(R.id.searchBackButton);
         suggestions = new ArrayList<>();
         autoCompleteTextView = findViewById(R.id.autoCompleteTextView);
         adapter = new AutoCompleteAdapter(this, android.R.layout.simple_dropdown_item_1line);
@@ -90,6 +91,15 @@ public class SearchActivity extends AppCompatActivity {
                 if(!autoCompleteTextView.getText().toString().isEmpty()) {
                     intent.putExtra("query", autoCompleteTextView.getText().toString());
                 }
+                finish();
+                startActivity(intent);
+            }
+        });
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SearchActivity.this, MainActivity.class);
                 finish();
                 startActivity(intent);
             }
