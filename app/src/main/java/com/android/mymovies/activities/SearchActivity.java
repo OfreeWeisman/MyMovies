@@ -46,13 +46,21 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+        // Initialize Variables
         Button findMovies = findViewById(R.id.find_movies);
         ImageButton back = findViewById(R.id.searchBackButton);
-        suggestions = new ArrayList<>();
         autoCompleteTextView = findViewById(R.id.autoCompleteTextView);
+        suggestions = new ArrayList<>();
         adapter = new AutoCompleteAdapter(this, android.R.layout.simple_dropdown_item_1line);
+
+        // Set The Autocomplete With Threshold - Suggestions Will Be Displayed Only For At Least 2 Letters
         autoCompleteTextView.setThreshold(2);
+
+        // Set The Autocomplete With The Adapter That Will Handle The Suggestions
         autoCompleteTextView.setAdapter(adapter);
+
+        // Event Listener - Define When To Invoke New Requests To The Web API
+        // The Requests Are Being Delayed For 0.5 Seconds In Order To Deny Lots Of Requests From Being Sent When The Text Is Changed
         autoCompleteTextView.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -71,6 +79,8 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
+        // Create A Handler Object To Manage The Requests
+        // The Handler Sends The Requests When It Is Being Triggered And The Autocomplete Isn't Empty
         handler = new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(@NonNull Message msg) {
@@ -84,6 +94,8 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
+        // Click Event - When Clicking On The 'Find Movies' Button The Keyword Typed/Selected Is Sent To The Main Screen
+        // On The Main Screen, A List Of Movies Which Contains That Keyword Is Displayed
         findMovies.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,6 +108,7 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
+        // Click Event -  Clicking The 'Back' Button Closes The Current Activity And The MAin Activity Is Launched With The Default Query
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,17 +117,17 @@ public class SearchActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-
     }
 
+    // This Function Manage The Http Request And Response
+    // The Requests Are Done In The Background And The Response Is Handled In The Foreground (In The UI thread)
     private void sendApiRequest(String url) {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(url)
                 .build();
 
-        // enqueue runs the request in the background
+        // The 'call.enqueue()' Works In The Background
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -128,6 +141,7 @@ public class SearchActivity extends AppCompatActivity {
                     SearchActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            // Process The Response In The UI Thread
                             parseResponse(myResponse);
 
                         }
@@ -135,9 +149,11 @@ public class SearchActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 
+    // This Function Converts JSON Format String To JSONObject To Read The List Of Movies Received.
+    // Each Result Inserted To A String List
+    // Set The Adapter With The Results List To Display As Suggestions To The User
     private void parseResponse (String response) {
         try {
             suggestions.clear();
@@ -145,8 +161,8 @@ public class SearchActivity extends AppCompatActivity {
             JSONArray resArray = mainObject.getJSONArray("results");
             for (int i = 0; i < resArray.length(); i++) {
                 JSONObject jsonMovie = resArray.getJSONObject(i);
-                String title = jsonMovie.getString("name");
-                suggestions.add(title);
+                String result = jsonMovie.getString("name");
+                suggestions.add(result);
             }
         } catch (JSONException e) {
             e.printStackTrace();

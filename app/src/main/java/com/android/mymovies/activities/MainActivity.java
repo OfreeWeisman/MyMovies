@@ -4,9 +4,7 @@ package com.android.mymovies.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.widget.NestedScrollView;
@@ -32,7 +30,7 @@ import okhttp3.Response;
 
 
 public class MainActivity extends AppCompatActivity {
-    private ImageButton searchButoon;
+    private ImageButton searchButton;
     private NestedScrollView scrollView;
     private RecyclerView recyclerView;
     private ArrayList<Movie> movies;
@@ -44,25 +42,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        searchButoon = findViewById(R.id.toolbar_search_button);
+        searchButton = findViewById(R.id.toolbar_search_button);
         scrollView = findViewById(R.id.scrollView);
         movies = new ArrayList<>();
         recyclerView = findViewById(R.id.recyclerView);
 
-        String apiKey = "api_key=6da65f3de080488aba7cb19a8e1601ce";
-        String defaultApiUrl = "https://api.themoviedb.org/3/discover/movie?";
-        String searchApiUrl = "https://api.themoviedb.org/3/search/movie?";
-        String input = "&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=";
-
-        //check if we received query to display movies by, using intent:
+        // Check If We Received A Query To Display Movies By.
+        // Otherwise Use The Default Query
         Intent i = getIntent();
         String intentExtra = i.getStringExtra("query");
         if (intentExtra != null) {
-            url = searchApiUrl + apiKey + "&language=en-US&include_adult=false&query=" + intentExtra + "&page=";
+            String apiKey = "api_key=6da65f3de080488aba7cb19a8e1601ce";
+            String searchApiUrl = "https://api.themoviedb.org/3/search/movie?";
+            String params = "&language=en-US&include_adult=false&query=";
+            url = searchApiUrl + apiKey + params + intentExtra + "&page=";
         }
 
+        // Sending The First Request To Bring The First Page Of Movies
         sendApiRequest(url, page++);
 
+        // Event Listening - When Reaching The Bottom Of The ScrollView, Bring The Next Page Of Movies
         scrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
@@ -72,7 +71,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        searchButoon.setOnClickListener(new View.OnClickListener() {
+        // Click Event - When Clicking The Search Button, Launch The Search Activity
+        searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
@@ -81,13 +81,15 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    // This Function Manage The Http Request And Response
+    // The Requests Are Done In The Background And The Response Is Handled In The Foreground (In The UI thread)
     private void sendApiRequest(String url, int page) {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(url+page)
                 .build();
 
-        // enqueue runs the request in the background
+        // The 'call.enqueue()' Works In The Background
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -98,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     final String myResponse = response.body().string();
-                    //parseResponse(myResponse);
+                    // Process The Response In The UI Thread To Display The Data
                     MainActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -111,6 +113,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    // This Function Converts JSON Format String To JSONObject To Read The List Of Movies Received.
+    // For Each Result, Creates A Movie Object With The Related Information And Adds It To The Movies List
     private void parseResponse (String response) {
         try {
             JSONObject mainObject = new JSONObject(response);
@@ -118,16 +122,15 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < resArray.length(); i++) {
                 JSONObject jsonMovie = resArray.getJSONObject(i);
                 String image = jsonMovie.getString("poster_path");
+                // Insert To The List Only Movies With Poster
                 if (image.equals("null")) {
                     continue;
                 }
-                String id = jsonMovie.getString("id");
                 String title = jsonMovie.getString("title");
                 String overview = jsonMovie.getString("overview");
                 String release_date = jsonMovie.getString("release_date");
                 double rating = jsonMovie.getDouble("vote_average");
-
-                Movie movie = new Movie(id, title, overview, release_date, rating, image);
+                Movie movie = new Movie(title, overview, release_date, rating, image);
                 movies.add(movie);
             }
         } catch (JSONException e) {
@@ -135,11 +138,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // This Function Sets An Adapter To The RecyclerView With The Movies List To Display
     private void displayMovies() {
-
         recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 2));
         MoviesAdapter adapter = new MoviesAdapter(MainActivity.this, movies);
         recyclerView.setAdapter(adapter);
+
+        // Event Listener - When Clicking On A List Item (Movie) Launch The Movie Activity To Display More Information About The Selected Movie
         adapter.setOnItemClickListener(new MoviesAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
@@ -149,7 +154,5 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-
     }
-
 }

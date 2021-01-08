@@ -15,53 +15,61 @@ import com.bumptech.glide.Glide;
 
 public class MovieActivity extends AppCompatActivity {
 
-    private ImageButton backButton;
+    private ImageView star;
     private TextView movieHeader;
     private TextView rating;
     private TextView releaseDate;
     private ImageView image;
     private TextView overview;
-    private ImageView star;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie);
 
+        // Receive Which Movie Was Clicked
         Intent i = getIntent();
         Movie movie = (Movie)i.getSerializableExtra("movie");
 
+        // Initialize Variables
+        ImageButton backButton = findViewById(R.id.backButton);
         star = findViewById(R.id.star);
-        backButton = findViewById(R.id.backButton);
         movieHeader = findViewById(R.id.movieHeader);
-        String imagePath = "https://image.tmdb.org/t/p/w500" + movie.getImage();
         rating = findViewById(R.id.rating);
         releaseDate = findViewById(R.id.releaseDate);
         image = findViewById(R.id.moviePoster);
         overview = findViewById(R.id.info);
 
-        movieHeader.setText(movie.getTitle());
-        double movie_rating = movie.getRating();
-        if (movie_rating == 0.0) {
-            rating.setText("");
-            star.setImageResource(R.drawable.ic_grade_black_24dp);
-        } else {
-            rating.setText(String.valueOf(movie.getRating()));
-        }
-        releaseDate.setText(movie.getReleaseDate());
-        overview.setText(movie.getOverview());
-        Glide.with(this)
-                .load(imagePath)
-                .into(image);
+        // Set The UI Views With The Movie's Information
+        setData(movie);
 
-
-
-
+        // Click Event Listener - When Clicking The 'Back' Button, Close The Current Activity
+        // Return To The Main Activity
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
+    }
+
+    // This Function Sets The Movie's Information To The UI Views
+    private void setData(Movie movie) {
+        if (movie != null) {
+            movieHeader.setText(movie.getTitle());
+            releaseDate.setText(movie.getReleaseDate());
+            overview.setText(movie.getOverview());
+            double movie_rating = movie.getRating();
+            if (movie_rating == 0.0) {
+                rating.setText("");
+                star.setImageResource(R.drawable.ic_grade_black_24dp);
+            } else {
+                rating.setText(String.valueOf(movie.getRating()));
+            }
+            String imagePath = "https://image.tmdb.org/t/p/w500" + movie.getImage();
+            Glide.with(this)
+                    .load(imagePath)
+                    .into(image);
+        }
     }
 }
