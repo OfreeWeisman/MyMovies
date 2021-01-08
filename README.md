@@ -1,6 +1,6 @@
 # My Movies
 ### Mobile Application For Android Devices To Explore Movies
-The Application uses HTTP requests to retrieve information about movies from the TMDb API. </br>
+The Application uses HTTP requests to retrieve information about movies from the [TMDb API](https://developers.themoviedb.org/3/getting-started/introduction). </br>
 On the main screen there are movies sorted by popularity, And by clicking on a movie, a more detailed page is displayed. </br>
 Also, it is possible to search movies by keywords.
 
